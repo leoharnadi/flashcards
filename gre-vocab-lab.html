@@ -1,0 +1,449 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lexicon — GRE vocabulary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2F3EF; --paper-2:#FBFBF9; --ink:#16191C; --ink-2:#5C6360;
+  --rule:#D8DAD3; --rule-2:#C2C5BC;
+  --green:#1F6B54; --green-bg:#E4EEE9;
+  --amber:#9A6A0E; --amber-bg:#F5EBD8;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --serif:"Newsreader",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:28px 20px 80px}
+header{border-bottom:1px solid var(--rule-2);padding-bottom:14px;margin-bottom:20px;display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+h1{font-family:var(--serif);font-weight:400;font-size:26px;letter-spacing:-.01em;margin:0}
+h1 em{font-style:italic;color:var(--ink-2)}
+.meta{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+nav{display:flex;gap:2px;margin-bottom:22px;border-bottom:1px solid var(--rule)}
+nav button{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:none;border:0;border-bottom:2px solid transparent;color:var(--ink-2);padding:9px 14px;cursor:pointer;margin-bottom:-1px}
+nav button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--green)}
+nav button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+section[hidden]{display:none}
+button{font-family:var(--sans);font-size:13px;background:var(--paper-2);border:1px solid var(--rule-2);border-radius:3px;padding:8px 14px;color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--ink-2)}
+button.solid{background:var(--ink);color:var(--paper-2);border-color:var(--ink)}
+button.solid:hover{background:#000}
+button:disabled{opacity:.4;cursor:default}
+input,textarea{font-family:var(--sans);font-size:14px;width:100%;background:var(--paper-2);border:1px solid var(--rule-2);border-radius:3px;padding:9px 11px;color:var(--ink)}
+textarea{line-height:1.6;resize:vertical}
+label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin:0 0 5px}
+.field{margin-bottom:14px}
+.bar{height:2px;background:var(--rule);margin-bottom:20px}
+.bar>i{display:block;height:100%;background:var(--green);transition:width .2s}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.entry{background:var(--paper-2);border:1px solid var(--rule-2);border-radius:4px;padding:34px 30px;min-height:270px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;position:relative}
+.entry:hover{border-color:var(--rule-2)}
+.num{position:absolute;top:14px;right:18px;font-family:var(--mono);font-size:11px;color:var(--ink-2)}
+.head{font-family:var(--serif);font-size:40px;font-weight:400;letter-spacing:-.015em;line-height:1.15;margin:0}
+.head.sm{font-size:27px}
+.tap{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-top:20px}
+.rule{height:1px;background:var(--rule);margin:18px 0}
+.sense{font-size:15px;line-height:1.65}
+.gloss{font-family:var(--serif);font-size:18px;color:var(--green);margin-top:12px;line-height:1.5}
+.quote{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink-2);line-height:1.6;border-left:2px solid var(--rule-2);padding-left:14px;margin-top:16px}
+.row{display:flex;gap:8px;margin-top:12px}
+.row>button{flex:1}
+.row>button.narrow{flex:0 0 46px;padding:8px 0}
+.stats{display:flex;gap:10px;margin-top:18px}
+.stat{flex:1;border-top:1px solid var(--rule-2);padding-top:8px}
+.stat b{display:block;font-family:var(--mono);font-size:22px;font-weight:400;line-height:1.3}
+.stat span{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.item{border-bottom:1px solid var(--rule);padding:14px 0;display:flex;gap:14px;align-items:flex-start}
+.item .n{font-family:var(--mono);font-size:11px;color:var(--ink-2);padding-top:5px;min-width:26px}
+.item .body{flex:1;min-width:0}
+.item .w{font-family:var(--serif);font-size:20px}
+.item .m{font-size:14px;color:var(--ink)}
+.item .g{font-size:14px;color:var(--green)}
+.item .e{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-2);margin-top:3px}
+.item .x{background:none;border:0;color:var(--ink-2);font-size:16px;padding:2px 6px;cursor:pointer;line-height:1}
+.item .x:hover{color:#933}
+.tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-left:8px;vertical-align:2px}
+.tag.k{background:var(--green-bg);color:var(--green)}
+.tag.l{background:var(--amber-bg);color:var(--amber)}
+.note{font-size:13px;color:var(--ink-2);line-height:1.6}
+.empty{font-family:var(--serif);font-style:italic;color:var(--ink-2);padding:36px 0;text-align:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:var(--ink);color:var(--paper-2);font-size:13px;padding:9px 18px;border-radius:3px;opacity:0;pointer-events:none;transition:opacity .18s}
+.toast.on{opacity:1}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Lexicon <em>— GRE vocabulary</em></h1>
+  <div class="meta"><span id="count">0</span> entries</div>
+</header>
+
+<nav role="tablist">
+  <button role="tab" id="t-study" aria-selected="true">Study</button>
+  <button role="tab" id="t-list" aria-selected="false">All words</button>
+  <button role="tab" id="t-add" aria-selected="false">Add words</button>
+  <button role="tab" id="t-data" aria-selected="false">Backup</button>
+</nav>
+
+<section id="v-study">
+  <div class="bar"><i id="fill" style="width:0"></i></div>
+  <div class="entry" id="card" role="button" tabindex="0" aria-label="Flashcard, press Enter to reveal">
+    <div class="num" id="num"></div>
+    <div class="head" id="head">Loading</div>
+    <div class="tap" id="tap">Tap or press space to reveal</div>
+    <div id="back" hidden>
+      <div class="rule"></div>
+      <div class="sense" id="sense"></div>
+      <div class="gloss" id="gloss"></div>
+      <div class="quote" id="quote"></div>
+    </div>
+  </div>
+  <div class="row">
+    <button class="narrow" id="prev" aria-label="Previous">&larr;</button>
+    <button id="hard">Still learning</button>
+    <button id="easy">Got it</button>
+    <button class="narrow" id="next" aria-label="Next">&rarr;</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="s-k">0</b><span>Got it</span></div>
+    <div class="stat"><b id="s-l">0</b><span>Still learning</span></div>
+    <div class="stat"><b id="s-n">0</b><span>Untouched</span></div>
+  </div>
+  <div class="tools">
+    <button id="shuffle">Shuffle</button>
+    <button id="dir">English &rarr; Indonesian</button>
+    <button id="drill">Drill weak words</button>
+    <button id="whole">Whole deck</button>
+    <button id="clearp">Clear progress</button>
+  </div>
+</section>
+
+<section id="v-list" hidden>
+  <div class="field"><input id="search" placeholder="Search words, meanings, or Indonesian"></div>
+  <div id="list"></div>
+</section>
+
+<section id="v-add" hidden>
+  <div class="field"><label for="f-w">Word</label><input id="f-w" placeholder="perspicacious"></div>
+  <div class="field"><label for="f-m">Meaning</label><input id="f-m" placeholder="having keen insight or judgment"></div>
+  <div class="field"><label for="f-g">Bahasa Indonesia</label><input id="f-g" placeholder="tajam pikiran, cerdas"></div>
+  <div class="field"><label for="f-e">Sentence example</label><textarea id="f-e" rows="2" placeholder="Her perspicacious reading of the market saved the fund millions."></textarea></div>
+  <button class="solid" id="save">Add entry</button>
+
+  <div class="rule" style="margin:30px 0 18px"></div>
+  <div class="field">
+    <label for="bulk">Paste many at once</label>
+    <p class="note" style="margin:0 0 8px">One word per line, fields separated by <code>|</code> — word | meaning | Indonesian | example. Missing fields are fine; you can fill them in later.</p>
+    <textarea id="bulk" rows="4" placeholder="perspicacious | having keen insight | tajam pikiran | Her perspicacious reading saved the fund millions."></textarea>
+  </div>
+  <button id="bulkgo">Add all lines</button>
+</section>
+
+<section id="v-data" hidden>
+  <p class="note">Your deck saves automatically. Copy this text somewhere safe if you want a backup, or paste an old backup in and restore it.</p>
+  <div class="field" style="margin-top:16px"><textarea id="dump" rows="8" spellcheck="false"></textarea></div>
+  <div class="tools" style="margin-top:0">
+    <button id="refresh">Show current deck</button>
+    <button id="restore">Restore from text</button>
+    <button id="copy">Copy to clipboard</button>
+  </div>
+  <p class="note" id="storenote" style="margin-top:18px"></p>
+</section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SEED=[
+["restive","unable to stay still or quiet, especially from impatience or boredom; also resistant to control","gelisah, tidak tenang, resah","The passengers grew restive and began crowding the gate agent's desk."],
+["prevaricative","tending to speak evasively or misleadingly in order to avoid the truth","suka mengelak, berdalih","The witness's prevaricative answers made the lawyer suspect he was hiding something."],
+["evasive","avoiding direct answers; tending to dodge an issue or commitment","suka mengelak, tidak terus terang","The manager gave only evasive answers and changed the subject."],
+["venerate","to regard with great respect or reverence","menghormati, memuliakan","In many Asian cultures, elders are venerated for their wisdom."],
+["acrimony","bitterness or sharpness in speech or temper, arising from anger","kepahitan, kebencian","The merger talks dissolved into acrimony after both sides alleged bad faith."],
+["imperiled","exposed to danger or risk; placed in peril","terancam, dalam bahaya","Decades of overfishing have imperiled several marine species."],
+["innocuous","not harmful or offensive; harmless","tidak berbahaya, tidak menyinggung","What seemed an innocuous remark sparked weeks of office tension."],
+["calumny","a false, malicious statement made to damage a reputation; slander","fitnah, pencemaran nama baik","The actress sued the tabloid for calumny after it published baseless rumors."],
+["prodigal","wastefully extravagant, especially with money; recklessly spendthrift","pemboros, menghambur-hamburkan uang","After years of prodigal spending, the heir burned through his inheritance."],
+["chastise","to criticize or reprimand severely; to scold sharply","memarahi, mengecam, menegur keras","The coach chastised the team publicly after their lackluster performance."],
+["reprimand","a formal or severe expression of disapproval; to officially rebuke","teguran resmi, peringatan keras","The employee received a written reprimand after missing deadlines."],
+["mercurial","subject to sudden, unpredictable changes in mood; volatile","berubah-ubah, plin-plan","Her mercurial temperament made her reactions impossible to predict."],
+["upbraid","to criticize or scold someone sharply for a fault","memarahi, mencela, mengecam","The teacher upbraided the students for submitting assignments late."],
+["amenable","open and responsive to suggestion; willing to cooperate","mudah diatur, terbuka terhadap saran","She was amenable to changing the meeting time."],
+["wanting (adj.)","lacking something necessary; deficient, not measuring up","kurang, tidak memadai","She did not think her vocabulary was wanting."],
+["impertinent","not showing proper respect; rude or insolent","tidak sopan, kurang ajar, lancang","The intern's impertinent remark to the CEO drew uncomfortable stares."],
+["deference","respectful submission to another's wishes, judgment, or authority","rasa hormat, kepatuhan","Out of deference to her grandfather, she postponed the wedding."],
+["harangue","a long, forceful, critical speech; to lecture at length aggressively","omelan panjang, ceramah keras","The coach's halftime harangue left the players rattled."],
+["involved (adj.)","intricate, complicated, or hard to follow","rumit, kompleks, berbelit-belit","The physics lecture became so involved that students couldn't keep up."],
+["extant","still existing; not extinct, destroyed, or lost","masih ada, masih bertahan","Only a handful of extant manuscripts have survived."],
+["veracious","habitually telling the truth; honest and accurate","jujur, benar, dapat dipercaya","Reporters trusted her as a veracious source."],
+["equivocal","open to more than one interpretation; deliberately ambiguous","ambigu, bermakna ganda","The CEO's equivocal statement left employees more anxious."],
+["censure","to express strong, often formal, disapproval; formal condemnation","kecaman, celaan resmi","The senator faced censure from his colleagues."],
+["parsimonious","extremely unwilling to spend money; stingy, excessively frugal","pelit, kikir, terlalu hemat","Despite his fortune, he reused tea bags three times."],
+["disinterested","impartial; having no personal stake (not the same as uninterested)","tidak berpihak, netral","As a disinterested mediator, the judge had no ties to either party."],
+["belie","to give a false impression of; to contradict the true nature of","mengingkari, menutupi kenyataan","Her calm expression belied the panic she felt inside."],
+["aberration","a departure from what is normal or expected; an anomaly","penyimpangan, kelainan, anomali","The scientist dismissed the reading as a mere aberration."],
+["galvanize","to shock or excite into sudden action","menggerakkan, membangkitkan semangat","The speech galvanized the team into a stunning comeback."],
+["qualify (v.)","to limit or moderate a statement by adding conditions","membatasi, memberi syarat","He qualified his recommendation by mentioning the slow service."],
+["ingenuous","innocent and unsophisticated; naive (not the same as ingenious)","polos, naif, tanpa tipu daya","His ingenuous belief that everyone deals fairly made him an easy target."],
+["egregious","outstandingly bad, shocking, or flagrant","sangat buruk, keterlaluan","The intern made an egregious error by emailing the confidential file to everyone."],
+["auspicious","favorable or promising; suggesting a good outcome","menjanjikan, pertanda baik","Record sales marked an auspicious beginning for the startup."],
+["castigate","to criticize or reprimand someone severely","mengecam keras, mencela tajam","The critic castigated the director for a lazy script."],
+["demur","to raise objections or show reluctance; to hesitate politely","keberatan, ragu-ragu, menolak dengan sopan","She demurred, citing prior family commitments."],
+["demure","reserved, modest, or shy in manner","pendiam, malu-malu, sopan","She gave a demure smile and looked down at her notes."],
+["vindicate","to clear of blame; to prove right or justified","membenarkan, membuktikan tidak bersalah","New DNA evidence finally vindicated him after twenty years."],
+["commensurate","corresponding in size or degree; proportionate","sepadan, sebanding, sesuai","Her raise was commensurate with her added responsibilities."],
+["parochial","having a narrow, local outlook; provincial, narrow-minded","berpikiran sempit, picik","His parochial view blinded him to overseas opportunities."],
+["laconic","using very few words; terse and concise","singkat, ringkas, tidak banyak bicara","He gave a laconic reply and walked away."],
+["iconoclast","one who attacks cherished beliefs or established institutions","penentang tradisi mapan","The architect was an iconoclast who rejected classical rules."],
+["venality","susceptibility to bribery; willingness to act dishonestly for gain","sifat mudah disuap, korup","The expose revealed the venality of officials who took bribes."],
+["enervate","to weaken or drain of energy and vitality","melemahkan, menguras tenaga","The heat enervated the hikers long before the summit."],
+["profligate","recklessly extravagant or wasteful; also shamelessly immoral","pemboros, royal berlebihan","The profligate heir squandered the family fortune on yachts."],
+["amorphous","lacking a clearly defined shape, form, or structure","tidak berbentuk, tidak terstruktur","The org chart was so amorphous nobody knew who reported to whom."],
+["gregarious","sociable; fond of the company of others","suka bergaul, ramah","Her gregarious personality made her the natural host."],
+["prowess","exceptional skill or expertise; also bravery in battle","keahlian luar biasa, kemampuan tinggi","Her prowess in negotiation made her the firm's best dealmaker."],
+["profligacy","reckless extravagance or wastefulness; shameless immorality","pemborosan, keborosan","An audit exposed years of profligacy with company funds."],
+["maladroit","clumsy or awkward, especially socially; lacking skill or tact","canggung, kikuk, tidak cekatan","His maladroit joke during the eulogy silenced the room."],
+["spurious","not genuine or true; false, often misleadingly so","palsu, tidak asli, tidak valid","The lawyer dismantled the spurious claims behind the case."],
+["benign","gentle and kindly; not harmful (medically, non-cancerous)","jinak, tidak berbahaya, baik hati","A benign comment about the schedule turned into a heated argument."],
+["eclectic","drawing ideas or styles from a wide, diverse range of sources","eklektik, beragam","Her eclectic taste runs from gamelan to Norwegian black metal."],
+["forestall","to prevent something by taking action in advance","mencegah, mengantisipasi","She sent an FAQ to forestall the flood of questions."],
+["didactic","intended to teach; sometimes overly preachy or moralistic","bersifat mendidik, menggurui","The film felt didactic, as if distrusting its own audience."],
+["panegyric","a speech or writing that lavishly praises; a formal tribute","pujian berlebihan, pidato sanjungan","The retiring CEO received a glowing panegyric from the board chair."],
+["erudite","having or showing great knowledge; scholarly and well-read","terpelajar, berpengetahuan luas","Her erudite commentary impressed even seasoned historians."],
+["execrable","extremely bad or unpleasant; utterly detestable","sangat buruk, menjijikkan","The critic called the signature dish execrable."],
+["prolific","producing a large amount, especially of creative work; highly productive","produktif, subur","The prolific author published thirty novels in two decades."],
+["sheer (adj.)","complete, pure, absolute; also very steep or very thin","murni, semata-mata, belaka","The sheer scale of the project overwhelmed the engineers."],
+["balk","to hesitate or refuse to proceed; to stop short","menolak, enggan, terhenti","The investor balked at the asking price."],
+["revel","to take great pleasure in; to celebrate lively and noisily","menikmati sepenuhnya, bergembira ria","She reveled in the freedom of her first solo trip."],
+["retaliate","to take action against someone in return for harm; to strike back","membalas, melakukan tindakan balasan","The firm retaliated with an aggressive counter-recruitment campaign."],
+["antediluvian","extremely old-fashioned or outdated; literally before the flood","kuno, ketinggalan zaman","His antediluvian views clashed with the startup's flat culture."],
+["disencumber","to free from a burden, obligation, or encumbrance","membebaskan dari beban","Selling the subsidiary disencumbered the company at last."],
+["jejune","naive, simplistic, or dull; lacking substance or maturity","dangkal, membosankan, tidak berbobot","The professor dismissed the argument as jejune."],
+["apocryphal","of doubtful authenticity; widely circulated but probably untrue","meragukan kebenarannya, kemungkinan tidak benar","The story of the CEO sleeping in the office was apocryphal."],
+["ascetic","practicing severe self-discipline, abstaining from indulgence","pertapa, hidup sederhana penuh pantangan","The monk's ascetic lifestyle struck visitors as extreme."],
+["sublime","of such grandeur or beauty as to inspire awe; transcendent","agung, luhur, luar biasa indah","The final movement was so sublime the audience sat in silence."],
+["outlandish","bizarre or strange to the point of absurdity; strikingly odd","aneh, ganjil, tidak lazim","The designer's outlandish runway looks sparked debate."],
+["prepossessing","attractive or appealing; creating a favorable first impression","menarik, mengesankan","Despite his prepossessing manner, he fumbled basic questions."],
+["unabashedly","without embarrassment or shame; openly and boldly","tanpa malu-malu, terang-terangan","She was unabashedly ambitious about the role she wanted."],
+["concomitant","occurring or existing alongside something else, especially as a natural result; accompanying","menyertai, terjadi bersamaan","The rise in remote work came with a concomitant increase in demand for home office furniture."],
+["inured","accustomed to something unpleasant or difficult, to the point of no longer being bothered by it","terbiasa (dengan hal buruk), kebal terhadap","After years on the trading floor, she had grown inured to the daily swings of the market."],
+["uncanny","strange or mysterious in an unsettling way, especially because it seems eerily familiar or precise","ganjil, aneh secara mengerikan, di luar nalar","His uncanny ability to predict market crashes made colleagues wonder if he had insider information."],
+["astute","having or showing an ability to accurately assess situations and make shrewd decisions; sharp-witted","cerdik, tajam pikiran, jeli","Her astute reading of the negotiation let her secure better terms than anyone expected."],
+["nascent","just coming into existence; beginning to develop","baru muncul, baru berkembang, embrionik","The nascent startup scene in the city had only a handful of funded companies so far."],
+["intractable","difficult to control, manage, or solve; stubbornly resistant to change","sulit dikendalikan, sulit diatasi, keras kepala","The negotiators reached an intractable disagreement over pricing that neither side was willing to budge on."],
+["predilection","a preference or special liking for something","kecenderungan, kesukaan khusus","He had a predilection for spicy food that his coworkers learned to accommodate whenever they ordered lunch together."],
+["lackluster","lacking energy, vitality, or brilliance; unimpressive, mediocre","kurang bersemangat, biasa saja, tidak berkilau","The team's lackluster performance in the second half cost them the championship."],
+["capricious","given to sudden, unpredictable changes in mood or behavior; impulsive and erratic","berubah-ubah, sewenang-wenang, tidak menentu","The capricious weather in the mountains could shift from sunshine to snowstorm within an hour."],
+["oscillating","swinging back and forth between two states, positions, or opinions; fluctuating","berayun-ayun, berfluktuasi, bolak-balik","Her mood kept oscillating between excitement and dread as the acceptance decision date approached."],
+["inveterate","having a long-established habit or practice; deeply ingrained, especially in a negative sense","mengakar, sudah mendarah daging, kronis","As an inveterate procrastinator, he still managed to submit brilliant work seconds before every deadline."],
+["timorous","showing or suffering from fear or timidity; easily frightened, timid","penakut, pemalu, cemas","The timorous intern hesitated for a full minute before finally raising her hand to ask a question."],
+["cowed","intimidated or frightened into submission or silence","tertekan, ketakutan hingga tunduk, terintimidasi","The junior analyst felt cowed into silence after the director dismissed her first suggestion so bluntly."],
+["turgid","swollen or distended (literal); also (of language) pompous, overblown, or excessively elaborate","membengkak, bengkak; juga (bahasa) berlebihan, bombastis","The professor's turgid prose buried a fairly simple argument under layers of unnecessary jargon."],
+["timid","lacking courage or confidence; easily frightened, shy","penakut, pemalu, kurang percaya diri","He gave a timid knock on the office door, unsure if he was even welcome."],
+["embellish","to make something more attractive by adding decorative details; also to exaggerate an account by adding fictitious details","menghias, mempercantik; juga melebih-lebihkan cerita","He tended to embellish his travel stories, adding dramatic flourishes that never quite happened."],
+["repatriate","to send or bring someone back to their own country; also to return something to its country of origin","memulangkan ke negara asal; juga mengembalikan (dana, artefak) ke negara asal","The museum agreed to repatriate the ancient artifacts to the country from which they had been taken decades earlier."],
+["extradite","to hand over a person accused or convicted of a crime to the country or authority where the crime was committed","mengekstradisi, menyerahkan (tersangka) ke negara lain untuk diadili","After years of legal battles, the fugitive was finally extradited to face trial in his home country."],
+["interdict","to formally prohibit or forbid something; also (noun) an official prohibition or ban","melarang secara resmi; (kata benda) larangan resmi","The court moved to interdict the shipment of counterfeit goods before it reached the port."],
+["expurgate","to remove objectionable or offensive material from a book, text, or account before publishing","menyensor, menghapus bagian tidak pantas dari teks","The publisher released an expurgated version of the memoir after the author's family objected to several passages."],
+["penury","extreme poverty; a state of lacking basic necessities","kemiskinan ekstrem, kepapaan","Despite his earlier fame, the composer died in penury, unable to afford even basic medical care."],
+["indigence","a state of poverty or extreme need; lacking the basic resources for a decent standard of living","kemiskinan, kekurangan","The charity focused its efforts on families living in indigence in the city's outskirts."],
+["opulence","great wealth or luxuriousness; lavish abundance","kemewahan, kekayaan berlimpah","The hotel lobby's marble floors and gilded ceilings radiated a sense of old-world opulence."],
+["depravity","moral corruption; wicked or immoral behavior","kebejatan moral, kejahatan","The court records revealed a depravity in the scheme that shocked even veteran investigators."],
+["deleterious","causing harm or damage, often in a subtle or gradual way","merugikan, berbahaya (secara bertahap)","Years of chronic stress had a deleterious effect on her health that no one noticed until it was severe."],
+["pernicious","having a harmful effect, especially in a gradual or subtle way; deadly, destructive","berbahaya (secara halus/bertahap), merusak","The pernicious effects of the misinformation campaign only became clear months after the election."],
+["apprehend","to arrest someone for a crime; also to understand or grasp something mentally; also to anticipate with anxiety","menangkap (pelaku); juga memahami; juga mengkhawatirkan","Police apprehended the suspect just hours after the robbery, though the full scheme took months to fully apprehend."],
+["precocity","unusually early development of ability or maturity, especially in children","kematangan/kecerdasan yang berkembang lebih awal dari usianya","The pianist's precocity was obvious by age six, when she was already composing her own pieces."],
+["parsimony","extreme unwillingness to spend money or use resources; stinginess, excessive frugality","kepelitan, sifat sangat hemat/kikir","The board's parsimony meant even basic office supplies required three layers of approval."],
+["probity","the quality of having strong moral principles; complete and confirmed integrity","integritas, kejujuran, keluhuran moral","Her reputation for probity made her the natural choice to audit the foundation's finances."],
+["pedestrian (adj.)","lacking excitement or distinction; ordinary, dull, commonplace","biasa-biasa saja, membosankan, tidak istimewa","The reviewer called the film's plot pedestrian, saying it recycled every romance cliche."],
+["odium","widespread hatred or disgust directed at someone, often because of something they've done","kebencian luas, rasa jijik yang meluas","The disgraced executive faced public odium after the fraud scheme came to light."],
+["affinity","a natural liking, attraction, or similarity between people or things","kecenderungan alami, kedekatan, kesamaan","She's always had an affinity for languages, picking up new ones with surprising ease."],
+["debacle","a sudden, complete failure or collapse; a fiasco","kegagalan total, kekacauan besar","The product launch turned into a debacle when the app crashed in front of the entire press room."],
+["fiasco","a complete and often embarrassing failure, usually of something intended to succeed","kegagalan total yang memalukan","The charity gala turned into a fiasco when the venue's power went out mid-speech."],
+["feat","an achievement that requires great skill, courage, or strength","prestasi, pencapaian luar biasa","Completing the marathon in under three hours was a feat few amateur runners could match."],
+["wane (v.)","to gradually decrease in strength, size, or intensity; to decline","berkurang, memudar, menurun secara bertahap","Public interest in the scandal began to wane once a bigger story broke the following week."],
+["inept","lacking skill or competence; clumsy, incompetent","tidak cakap, tidak becus, kikuk","His inept handling of the crisis only made the company's PR problem worse."],
+["morose","sullen, gloomy, and ill-tempered; showing a bad mood through silence","murung, muram, cemberut","He'd been morose all week, barely speaking since he heard the news."],
+["florid","excessively ornate or elaborate, especially in style or language; also having a red or flushed complexion","terlalu berbunga-bunga, berlebihan; juga kemerahan (wajah)","Critics found his florid prose exhausting, with every sentence stuffed with unnecessary adjectives."],
+["incarnation","a person or thing embodying a particular quality or idea; also the embodiment of a deity in human form","perwujudan, penjelmaan","Critics called the new CEO the incarnation of everything wrong with the old corporate culture."],
+["sanguine","optimistic or positive, especially in a difficult situation; confidently cheerful","optimis, penuh harapan","Despite the layoffs sweeping the industry, she remained sanguine about her own job security."],
+["humor (mood sense)","a person's temporary state of mind or mood","suasana hati, mood","The king was in an ill humor after losing at cards, and none of his advisors dared approach him."],
+["ostracized","excluded from a group or society; shunned","dikucilkan, diasingkan","After blowing the whistle on the fraud, he found himself ostracized by former colleagues."],
+["callous","showing or having an insensitive and cruel disregard for others; emotionally hardened","tidak berperasaan, kejam, tak acuh","His callous remark about the layoffs shocked even his closest allies."],
+["cauterized","burned or seared to stop bleeding or destroy infected tissue; figuratively made emotionally numb","dikauterisasi; secara kiasan dibuat mati rasa","The wound was cauterized to stop the bleeding before surgery."],
+["attuned","being sensitive to, aware of, or in harmony with something; adjusted to","peka terhadap, selaras dengan","She was finely attuned to shifts in consumer sentiment long before the data confirmed them."],
+["stench","a strong, very unpleasant smell","bau busuk, bau menyengat","The stench of the overflowing dumpster reached the office windows on the third floor."],
+["bucolic","relating to pleasant, peaceful aspects of the countryside; rural and idyllic","pedesaan yang tenang dan indah","They spent the weekend in a bucolic village where the loudest sound was an occasional rooster."],
+["pastoral","relating to the peaceful, idealized countryside; also relating to a pastor's spiritual guidance","pedesaan yang idealis; juga berkaitan dengan bimbingan rohani","The painting captured a pastoral scene of sheep grazing beneath a golden sky."],
+["noisome","having an extremely unpleasant smell; offensive, noxious","berbau busuk, menjijikkan","A noisome odor drifted from the abandoned factory, driving residents to complain."],
+["atavistic","relating to a reversion to ancestral or primitive behavior; instinctive and throwback in nature","bersifat kembali ke sifat nenek moyang/primitif","The mob's atavistic aggression during the riot shocked observers."],
+["olfactory","relating to the sense of smell","berkaitan dengan indra penciuman","Sommeliers train their olfactory senses for years to distinguish subtle notes in wine."],
+["mephitic","having a foul or poisonous smell; noxious","berbau busuk dan beracun","Mephitic fumes seeped from the cracked pipeline, forcing an evacuation."],
+["bovine","relating to cattle; also (figuratively) sluggish, dull, or unemotional in manner","berkaitan dengan sapi; juga (kiasan) lamban","His bovine expression during the meeting made it impossible to tell whether he agreed."],
+["cognoscenti","people who are highly knowledgeable and well-informed about a particular subject","kalangan yang sangat paham/ahli dalam suatu bidang","The exhibit drew the city's art cognoscenti, all eager to critique the young painter's debut."],
+["uninitiated","lacking knowledge or experience in a particular field or activity","belum berpengalaman, belum paham","To the uninitiated, the trading floor's shouting and hand signals looked like total chaos."],
+["seminal","strongly influencing later developments; highly original and important","berpengaruh besar, mendasar","Her seminal paper on network theory is still cited in nearly every introductory course."],
+["impetuous","acting or done quickly and without thought or care; impulsive, rash","terburu-buru, gegabah, impulsif","His impetuous decision to quit without another job lined up worried his family."],
+["consummate (adj.)","showing a high degree of skill and flair; complete and perfect in every detail","sempurna, ahli sejati, mumpuni","She was a consummate professional, handling the crisis with total composure."],
+["inchoate","just begun and not yet fully formed or developed; rudimentary","baru dimulai, belum terbentuk sepenuhnya","The proposal was still inchoate, more a collection of ideas than an actual plan."],
+["sedentary","characterized by sitting or little physical activity; not migratory","banyak duduk, kurang gerak, menetap","Years of a sedentary desk job left him determined to start running again."],
+["incipient","in an early stage; just beginning to appear or develop","baru mulai muncul, tahap awal","Doctors caught the incipient signs of the disease during a routine checkup."],
+["fecund","producing abundant offspring, growth, or ideas; highly fertile or creatively productive","subur, produktif","The workshop turned out to be a fecund environment, generating a dozen viable ideas."],
+["incessant","continuing without pause or interruption, often in an annoying way","terus-menerus, tiada henti","The incessant honking outside her apartment made it impossible to focus."],
+["elocution","the skill of clear and expressive speech, especially in public speaking","seni berbicara/berpidato dengan jelas dan ekspresif","Years of elocution lessons gave her the confident, crisp delivery of a natural speaker."],
+["paean","a song or expression of praise, joy, or triumph","pujian meriah, lagu kemenangan/pujian","Critics wrote a paean to the young director's debut, calling it the best film of the decade."],
+["oratory","the art of formal public speaking; eloquent and persuasive speech","seni pidato, kefasihan berbicara di depan umum","His oratory during the trial swayed even the most skeptical jurors."],
+["diatribe","a forceful and bitter verbal attack against someone or something","serangan verbal yang keras dan pedas","The columnist's diatribe against the new policy dominated social media for days."],
+["lionized","treated as a celebrity or given great public attention and admiration","dielu-elukan, diperlakukan bak selebritas","After the rescue, the firefighter was lionized by the local press for weeks."],
+["exculpated","cleared of blame or guilt for a wrongdoing","dibebaskan dari kesalahan, dinyatakan tidak bersalah","New witness testimony exculpated the defendant just hours before the verdict."],
+["exonerated","officially cleared of a criminal charge; absolved of blame","dibebaskan dari tuduhan secara resmi","He was exonerated after twenty years in prison when DNA evidence proved his innocence."],
+["repudiated","rejected or refused to accept, follow, or acknowledge; disowned","ditolak, disangkal secara resmi","The senator publicly repudiated the extremist group's endorsement of his campaign."],
+["obstinate","stubbornly refusing to change one's opinion or course of action","keras kepala, bersikeras, tidak mau mengalah","The obstinate committee member blocked every proposed compromise for three meetings."],
+["diffident","lacking confidence in oneself; shy and hesitant","kurang percaya diri, malu-malu, ragu-ragu","Despite her expertise, she gave a diffident presentation, constantly second-guessing herself."],
+["lackadaisical","lacking enthusiasm or determination; carelessly lazy","acuh tak acuh, malas, kurang bersemangat","His lackadaisical attitude toward deadlines finally caught up with him."],
+["incapacitated","deprived of strength or ability; unable to function normally","tidak berdaya, lumpuh (fungsional)","The storm left half the city's power grid incapacitated for nearly a week."],
+["hapless","unlucky; unfortunate, especially in a way that invites pity","malang, sial, bernasib buruk","The hapless intern spilled coffee on the CEO's laptop minutes before the board meeting."],
+["guileless","honest and straightforward; without deceit or cunning; innocent","jujur, polos, tanpa tipu daya","His guileless answers convinced even the most suspicious interrogators."],
+["duplicitous","deceitful; deliberately deceptive in behavior or speech","licik, munafik, bermuka dua","Her duplicitous business partner had been secretly negotiating with a rival firm for months."],
+["listless","lacking energy or enthusiasm; lethargic","lesu, tidak bersemangat, lemas","After days without proper sleep, she felt listless and struggled to focus."],
+["artless","without deception or cunning; natural and simple, sometimes unsophisticated","polos, jujur tanpa tipu daya, sederhana","The child's artless honesty made the adults in the room burst out laughing."],
+["mendacious","not telling the truth; lying, dishonest","pembohong, tidak jujur, suka berdusta","The mendacious testimony fell apart the moment cross-examination began."],
+["gullible","easily deceived or tricked; too trusting","mudah tertipu, terlalu percaya","The gullible investor wired money to the scammer after just one convincing phone call."]
+];
+
+const KEY="gre-lexicon-v1";
+let words=[],prog={},order=[],idx=0,revealed=false,en2id=true,storeMode="memory";
+const $=id=>document.getElementById(id);
+
+async function load(){
+  let raw=null;
+  if(window.storage&&window.storage.get){
+    storeMode="cloud";
+    try{const r=await window.storage.get(KEY);if(r&&r.value)raw=r.value;}catch(e){}
+  }else{
+    try{localStorage.setItem("_t","1");localStorage.removeItem("_t");storeMode="local";raw=localStorage.getItem(KEY);}catch(e){storeMode="memory";}
+  }
+  if(raw){try{const d=JSON.parse(raw);words=d.words||[];prog=d.prog||{};}catch(e){}}
+  if(!words.length)words=SEED.map(r=>({w:r[0],m:r[1],g:r[2],e:r[3]}));
+  order=words.map((_,i)=>i);
+  const notes={cloud:"Saved automatically in this artifact. It stays here between sessions.",local:"Saved in this browser. Clearing site data will erase it, so keep a backup.",memory:"Storage is unavailable here, so changes last only until you close the page. Copy your backup text before leaving."};
+  $("storenote").textContent=notes[storeMode];
+  render();renderList();
+}
+async function save(){
+  const raw=JSON.stringify({words,prog});
+  if(storeMode==="cloud"){try{await window.storage.set(KEY,raw);}catch(e){toast("Could not save");}}
+  else if(storeMode==="local"){try{localStorage.setItem(KEY,raw);}catch(e){}}
+}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1600);}
+
+function render(){
+  if(!order.length){$("head").textContent="No cards";$("num").textContent="";return;}
+  if(idx>=order.length)idx=0;
+  const c=words[order[idx]];
+  $("num").textContent=(idx+1)+" / "+order.length;
+  $("head").textContent=en2id?c.w:(c.g||c.m);
+  $("head").className="head"+(en2id?"":" sm");
+  $("sense").textContent=c.m||"";
+  $("gloss").textContent=en2id?(c.g||""):c.w;
+  $("quote").textContent=c.e||"";
+  $("quote").style.display=c.e?"block":"none";
+  $("back").hidden=!revealed;
+  $("tap").style.display=revealed?"none":"block";
+  $("fill").style.width=Math.round((idx+1)/order.length*100)+"%";
+  $("count").textContent=words.length;
+  const v=Object.values(prog);
+  const k=v.filter(x=>x===1).length,l=v.filter(x=>x===2).length;
+  $("s-k").textContent=k;$("s-l").textContent=l;$("s-n").textContent=Math.max(0,words.length-k-l);
+}
+function step(n){idx=(idx+n+order.length)%order.length;revealed=false;render();}
+function mark(v){const c=words[order[idx]];if(c)prog[c.w]=v;save();step(1);}
+
+$("card").onclick=()=>{revealed=!revealed;render();};
+$("card").onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();revealed=!revealed;render();}};
+$("next").onclick=()=>step(1);
+$("prev").onclick=()=>step(-1);
+$("easy").onclick=()=>mark(1);
+$("hard").onclick=()=>mark(2);
+$("shuffle").onclick=()=>{for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}idx=0;revealed=false;render();toast("Shuffled");};
+$("dir").onclick=()=>{en2id=!en2id;$("dir").textContent=en2id?"English \u2192 Indonesian":"Indonesian \u2192 English";revealed=false;render();};
+$("drill").onclick=()=>{const d=words.map((c,i)=>[c,i]).filter(p=>prog[p[0].w]===2).map(p=>p[1]);if(!d.length){toast("Nothing marked as still learning yet");return;}order=d;idx=0;revealed=false;render();toast(d.length+" weak words");};
+$("whole").onclick=()=>{order=words.map((_,i)=>i);idx=0;revealed=false;render();};
+$("clearp").onclick=()=>{prog={};save();render();renderList();toast("Progress cleared");};
+document.addEventListener("keydown",e=>{
+  if(/input|textarea/i.test(e.target.tagName))return;
+  if($("v-study").hidden)return;
+  if(e.key==="ArrowRight")step(1);
+  if(e.key==="ArrowLeft")step(-1);
+});
+
+function esc(s){return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function renderList(){
+  const q=($("search").value||"").toLowerCase().trim();
+  const rows=words.map((c,i)=>[c,i]).filter(p=>!q||(p[0].w+" "+p[0].m+" "+p[0].g).toLowerCase().includes(q));
+  if(!rows.length){$("list").innerHTML='<div class="empty">Nothing matches that.</div>';return;}
+  $("list").innerHTML=rows.map(p=>{
+    const c=p[0],st=prog[c.w];
+    const tag=st===1?'<span class="tag k">got it</span>':st===2?'<span class="tag l">learning</span>':"";
+    return '<div class="item"><div class="n">'+(p[1]+1)+'</div><div class="body">'+
+      '<div class="w">'+esc(c.w)+tag+'</div>'+
+      '<div class="m">'+esc(c.m)+'</div>'+
+      (c.g?'<div class="g">'+esc(c.g)+'</div>':"")+
+      (c.e?'<div class="e">'+esc(c.e)+'</div>':"")+
+      '</div><button class="x" data-i="'+p[1]+'" aria-label="Delete '+esc(c.w)+'">&times;</button></div>';
+  }).join("");
+  $("list").querySelectorAll(".x").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i;const w=words[i].w;
+    words.splice(i,1);delete prog[w];order=words.map((_,k)=>k);idx=0;
+    save();render();renderList();toast("Removed "+w);
+  });
+}
+$("search").oninput=renderList;
+
+function addWord(w,m,g,e){
+  w=(w||"").trim();if(!w)return false;
+  const at=words.findIndex(c=>c.w.toLowerCase()===w.toLowerCase());
+  const rec={w:w,m:(m||"").trim(),g:(g||"").trim(),e:(e||"").trim()};
+  if(at>=0)words[at]=rec;else words.push(rec);
+  return true;
+}
+$("save").onclick=()=>{
+  if(!$("f-w").value.trim()){toast("Enter a word first");return;}
+  addWord($("f-w").value,$("f-m").value,$("f-g").value,$("f-e").value);
+  ["f-w","f-m","f-g","f-e"].forEach(id=>$(id).value="");
+  order=words.map((_,i)=>i);save();render();renderList();toast("Added");$("f-w").focus();
+};
+$("bulkgo").onclick=()=>{
+  const lines=$("bulk").value.split("\n").map(l=>l.trim()).filter(Boolean);
+  let n=0;
+  lines.forEach(l=>{const p=l.split("|").map(s=>s.trim());if(addWord(p[0],p[1],p[2],p[3]))n++;});
+  if(!n){toast("Nothing to add");return;}
+  $("bulk").value="";order=words.map((_,i)=>i);save();render();renderList();toast(n+" added");
+};
+
+$("refresh").onclick=()=>{$("dump").value=JSON.stringify({words,prog},null,1);};
+$("restore").onclick=()=>{
+  try{
+    const d=JSON.parse($("dump").value);
+    if(!Array.isArray(d.words))throw 0;
+    words=d.words;prog=d.prog||{};order=words.map((_,i)=>i);idx=0;
+    save();render();renderList();toast("Restored "+words.length+" entries");
+  }catch(e){toast("That text isn't a valid backup");}
+};
+$("copy").onclick=async()=>{
+  $("dump").value=JSON.stringify({words,prog},null,1);
+  try{await navigator.clipboard.writeText($("dump").value);toast("Copied");}
+  catch(e){$("dump").select();toast("Select and copy manually");}
+};
+
+const tabs=[["t-study","v-study"],["t-list","v-list"],["t-add","v-add"],["t-data","v-data"]];
+tabs.forEach(([t,v])=>{$(t).onclick=()=>{
+  tabs.forEach(([t2,v2])=>{$(t2).setAttribute("aria-selected",t2===t);$(v2).hidden=t2!==t;});
+  if(v==="v-data")$("dump").value=JSON.stringify({words,prog},null,1);
+  if(v==="v-list")renderList();
+};});
+
+load();
+</script>
