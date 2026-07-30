@@ -34,6 +34,14 @@ export const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab 
       </button>
       <button
         role="tab"
+        id="t-deck"
+        aria-selected={activeTab === 'deck'}
+        onClick={() => setActiveTab('deck')}
+      >
+        Decks
+      </button>
+      <button
+        role="tab"
         id="t-data"
         aria-selected={activeTab === 'data'}
         onClick={() => setActiveTab('data')}

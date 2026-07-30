@@ -4,6 +4,7 @@ import { Navigation } from './components/Navigation';
 import { StudyView } from './components/StudyView';
 import { ListView } from './components/ListView';
 import { AddView } from './components/AddView';
+import { DeckView } from './components/DeckView';
 import { DataView } from './components/DataView';
 import { Toast } from './components/Toast';
 
@@ -24,6 +25,11 @@ export function App() {
     showToast,
     searchTerm,
     setSearchTerm,
+    activeDeck,
+    loadDeckByCode,
+    saveDeckToCloud,
+    createNewDeck,
+    resetToLocalSeed,
     stats,
     step,
     markProgress,
@@ -75,6 +81,17 @@ export function App() {
         hidden={activeTab !== 'add'}
         addWord={addWord}
         bulkAddWords={bulkAddWords}
+        showToast={showToast}
+      />
+
+      <DeckView
+        hidden={activeTab !== 'deck'}
+        activeDeck={activeDeck}
+        loadDeckByCode={loadDeckByCode}
+        saveDeckToCloud={saveDeckToCloud}
+        createNewDeck={createNewDeck}
+        resetToLocalSeed={resetToLocalSeed}
+        wordsCount={words.length}
         showToast={showToast}
       />
 

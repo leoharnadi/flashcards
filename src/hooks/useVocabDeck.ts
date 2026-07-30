@@ -1,8 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import type { WordEntry, StudyProgress, TabType, StoreMode, DeckData } from '../types/vocab';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import type { WordEntry, StudyProgress, TabType, StoreMode, DeckData, DeckInfo } from '../types/vocab';
 import { SEED_WORDS } from '../data/seedWords';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const STORAGE_KEY = 'gre-lexicon-v1';
+const ACTIVE_DECK_KEY = 'gre-active-deck-v1';
 
 export function useVocabDeck() {
   const [words, setWords] = useState<WordEntry[]>([]);
@@ -15,6 +17,7 @@ export function useVocabDeck() {
   const [storeMode, setStoreMode] = useState<StoreMode>('memory');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [activeDeck, setActiveDeck] = useState<DeckInfo | null>(null);
 
   const showToast = useCallback((msg: string) => {
     setToastMessage(msg);
@@ -56,6 +59,16 @@ export function useVocabDeck() {
       initialWords = SEED_WORDS;
     }
 
+    // Restore saved active deck info if present
+    try {
+      const savedDeckRaw = localStorage.getItem(ACTIVE_DECK_KEY);
+      if (savedDeckRaw) {
+        setActiveDeck(JSON.parse(savedDeckRaw));
+      }
+    } catch {
+      // Ignore error
+    }
+
     setWords(initialWords);
     setProg(initialProg);
     setOrder(initialWords.map((_, i) => i));
@@ -68,6 +81,18 @@ export function useVocabDeck() {
       localStorage.setItem(STORAGE_KEY, raw);
     } catch {
       // Storage unavailable or full
+    }
+  }, []);
+
+  const saveActiveDeckState = useCallback((deckInfo: DeckInfo | null) => {
+    try {
+      if (deckInfo) {
+        localStorage.setItem(ACTIVE_DECK_KEY, JSON.stringify(deckInfo));
+      } else {
+        localStorage.removeItem(ACTIVE_DECK_KEY);
+      }
+    } catch {
+      // Ignore
     }
   }, []);
 
@@ -87,13 +112,16 @@ export function useVocabDeck() {
   }, [words, prog]);
 
   // Navigation
+  const orderRef = useRef(order);
+  useEffect(() => {
+    orderRef.current = order;
+  }, [order]);
+
   const step = useCallback((n: number) => {
-    setOrder((prevOrder) => {
-      if (!prevOrder.length) return prevOrder;
-      setCurrentIndex((prevIdx) => (prevIdx + n + prevOrder.length) % prevOrder.length);
-      setIsRevealed(false);
-      return prevOrder;
-    });
+    const len = orderRef.current.length;
+    if (!len) return;
+    setCurrentIndex((prevIdx) => (prevIdx + n + len) % len);
+    setIsRevealed(false);
   }, []);
 
   const markProgress = useCallback(
@@ -190,7 +218,7 @@ export function useVocabDeck() {
     (text: string) => {
       const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
       let count = 0;
-      let tempWords = [...words];
+      const tempWords = [...words];
 
       lines.forEach((line) => {
         const parts = line.split('|').map((s) => s.trim());
@@ -265,6 +293,160 @@ export function useVocabDeck() {
     [saveDeck, showToast]
   );
 
+  // --- SUPABASE CLOUD DECK FUNCTIONS ---
+
+  const loadDeckByCode = useCallback(
+    async (code: string): Promise<boolean> => {
+      if (!isSupabaseConfigured) {
+        showToast('Supabase is not configured yet');
+        return false;
+      }
+
+      try {
+        // Fetch deck details
+        const { data: deck, error: deckErr } = await supabase
+          .from('decks')
+          .select('id, code, name')
+          .eq('code', code.trim().toLowerCase())
+          .single();
+
+        if (deckErr || !deck) {
+          showToast(`Deck '${code}' not found`);
+          return false;
+        }
+
+        // Fetch words for this deck
+        const { data: wordsData, error: wordsErr } = await supabase
+          .from('words')
+          .select('w, m, g, e')
+          .eq('deck_id', deck.id)
+          .order('created_at', { ascending: true });
+
+        if (wordsErr) {
+          showToast('Failed to load words for deck');
+          return false;
+        }
+
+        const loadedWords: WordEntry[] = (wordsData || []).map((row) => ({
+          w: row.w,
+          m: row.m || '',
+          g: row.g || '',
+          e: row.e || '',
+        }));
+
+        const newDeckInfo: DeckInfo = {
+          id: deck.id,
+          code: deck.code,
+          name: deck.name,
+        };
+
+        setWords(loadedWords);
+        setOrder(loadedWords.map((_, i) => i));
+        setCurrentIndex(0);
+        setIsRevealed(false);
+        setActiveDeck(newDeckInfo);
+        saveActiveDeckState(newDeckInfo);
+        saveDeck(loadedWords, prog);
+        showToast(`Loaded deck '${deck.name}' (${loadedWords.length} words)`);
+        return true;
+      } catch (err: unknown) {
+        const error = err as Error;
+        showToast(error.message || 'Error loading deck');
+        return false;
+      }
+    },
+    [saveActiveDeckState, saveDeck, prog, showToast]
+  );
+
+  const saveDeckToCloud = useCallback(
+    async (password: string): Promise<boolean> => {
+      if (!isSupabaseConfigured) {
+        showToast('Supabase is not configured yet');
+        return false;
+      }
+      if (!activeDeck) {
+        showToast('No active cloud deck selected');
+        return false;
+      }
+
+      try {
+        const { data, error } = await supabase.rpc('update_deck_words', {
+          p_code: activeDeck.code,
+          p_password: password,
+          p_words: words,
+        });
+
+        if (error) {
+          showToast(error.message || 'Error saving to Supabase');
+          return false;
+        }
+
+        if (data === true) {
+          showToast(`Updated '${activeDeck.name}' on Supabase`);
+          return true;
+        } else {
+          showToast('Incorrect deck password');
+          return false;
+        }
+      } catch (err: unknown) {
+        const error = err as Error;
+        showToast(error.message || 'Failed to save to Supabase');
+        return false;
+      }
+    },
+    [activeDeck, words, showToast]
+  );
+
+  const createNewDeck = useCallback(
+    async (code: string, name: string, password: string): Promise<boolean> => {
+      if (!isSupabaseConfigured) {
+        showToast('Supabase is not configured yet');
+        return false;
+      }
+
+      try {
+        const { data, error } = await supabase.rpc('create_deck', {
+          p_code: code.trim().toLowerCase(),
+          p_name: name.trim() || 'Untitled deck',
+          p_password: password,
+          p_words: words,
+        });
+
+        if (error) {
+          showToast(error.message || 'Error creating deck');
+          return false;
+        }
+
+        const newDeckInfo: DeckInfo = {
+          id: typeof data === 'string' ? data : undefined,
+          code: code.trim().toLowerCase(),
+          name: name.trim() || 'Untitled deck',
+        };
+
+        setActiveDeck(newDeckInfo);
+        saveActiveDeckState(newDeckInfo);
+        showToast(`Created deck '${newDeckInfo.name}' on Supabase`);
+        return true;
+      } catch (err: unknown) {
+        const error = err as Error;
+        showToast(error.message || 'Failed to create deck');
+        return false;
+      }
+    },
+    [words, saveActiveDeckState, showToast]
+  );
+
+  const resetToLocalSeed = useCallback(() => {
+    setActiveDeck(null);
+    saveActiveDeckState(null);
+    setWords(SEED_WORDS);
+    setOrder(SEED_WORDS.map((_, i) => i));
+    setCurrentIndex(0);
+    setIsRevealed(false);
+    saveDeck(SEED_WORDS, prog);
+    showToast('Reset to default local deck');
+  }, [saveActiveDeckState, saveDeck, prog, showToast]);
+
   return {
     words,
     prog,
@@ -281,6 +463,11 @@ export function useVocabDeck() {
     showToast,
     searchTerm,
     setSearchTerm,
+    activeDeck,
+    loadDeckByCode,
+    saveDeckToCloud,
+    createNewDeck,
+    resetToLocalSeed,
     stats,
     step,
     markProgress,

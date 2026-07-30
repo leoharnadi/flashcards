@@ -9,11 +9,17 @@ export type StudyStatus = 0 | 1 | 2; // 0 = Untouched, 1 = Got it, 2 = Still lea
 
 export type StudyProgress = Record<string, StudyStatus>;
 
-export type TabType = 'study' | 'list' | 'add' | 'data';
+export type TabType = 'study' | 'list' | 'add' | 'deck' | 'data';
 
 export type StoreMode = 'cloud' | 'local' | 'memory';
 
 export interface DeckData {
   words: WordEntry[];
   prog: StudyProgress;
+}
+
+export interface DeckInfo {
+  id?: string;
+  code: string;
+  name: string;
 }
