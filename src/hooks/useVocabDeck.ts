@@ -397,8 +397,54 @@ export function useVocabDeck() {
     [activeDeck, words, showToast]
   );
 
+  const updateDeckSettings = useCallback(
+    async (currentPassword: string, newName: string, newPassword: string): Promise<boolean> => {
+      if (!isSupabaseConfigured) {
+        showToast('Supabase is not configured yet');
+        return false;
+      }
+      if (!activeDeck) {
+        showToast('No active cloud deck selected');
+        return false;
+      }
+
+      try {
+        const { data, error } = await supabase.rpc('update_deck_settings', {
+          p_code: activeDeck.code,
+          p_password: currentPassword,
+          p_new_name: newName.trim() || null,
+          p_new_password: newPassword || null,
+        });
+
+        if (error) {
+          showToast(error.message || 'Error updating deck settings');
+          return false;
+        }
+
+        if (data !== true) {
+          showToast('Incorrect deck password');
+          return false;
+        }
+
+        // Reflect a name change locally; password itself is never stored client-side
+        if (newName.trim()) {
+          const updatedDeckInfo: DeckInfo = { ...activeDeck, name: newName.trim() };
+          setActiveDeck(updatedDeckInfo);
+          saveActiveDeckState(updatedDeckInfo);
+        }
+
+        return true;
+      } catch (err: unknown) {
+        const error = err as Error;
+        showToast(error.message || 'Failed to update deck settings');
+        return false;
+      }
+    },
+    [activeDeck, saveActiveDeckState, showToast]
+  );
+
   const createNewDeck = useCallback(
-    async (code: string, name: string, password: string): Promise<boolean> => {
+    async (code: string, name: string, password: string, useCurrentWords: boolean): Promise<boolean> => {
       if (!isSupabaseConfigured) {
         showToast('Supabase is not configured yet');
         return false;
@@ -409,7 +455,7 @@ export function useVocabDeck() {
           p_code: code.trim().toLowerCase(),
           p_name: name.trim() || 'Untitled deck',
           p_password: password,
-          p_words: words,
+          p_words: useCurrentWords ? words : [],
         });
 
         if (error) {
@@ -425,6 +471,18 @@ export function useVocabDeck() {
 
         setActiveDeck(newDeckInfo);
         saveActiveDeckState(newDeckInfo);
+
+        // Keep local state in sync with what was actually created on Supabase —
+        // otherwise an "empty" deck would still show the old words locally,
+        // and a subsequent Save would push them back up.
+        if (!useCurrentWords) {
+          setWords([]);
+          setOrder([]);
+          setCurrentIndex(0);
+          setProg({});
+          saveDeck([], {});
+        }
+
         showToast(`Created deck '${newDeckInfo.name}' on Supabase`);
         return true;
       } catch (err: unknown) {
@@ -433,7 +491,7 @@ export function useVocabDeck() {
         return false;
       }
     },
-    [words, saveActiveDeckState, showToast]
+    [words, saveActiveDeckState, saveDeck, showToast]
   );
 
   const resetToLocalSeed = useCallback(() => {
@@ -466,6 +524,7 @@ export function useVocabDeck() {
     activeDeck,
     loadDeckByCode,
     saveDeckToCloud,
+    updateDeckSettings,
     createNewDeck,
     resetToLocalSeed,
     stats,

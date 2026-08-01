@@ -1,12 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { DeckInfo } from '../types/vocab';
 import { isSupabaseConfigured } from '../lib/supabase';
+
+const RECENT_DECKS_KEY = 'gre-lexicon-recent-decks';
+const MAX_RECENT_DECKS = 8;
+
+interface RecentDeck {
+  code: string;
+  name: string;
+}
+
+function loadRecentDecks(): RecentDeck[] {
+  try {
+    const raw = localStorage.getItem(RECENT_DECKS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function pushRecentDeck(deck: RecentDeck): RecentDeck[] {
+  const existing = loadRecentDecks().filter((d) => d.code !== deck.code);
+  const updated = [deck, ...existing].slice(0, MAX_RECENT_DECKS);
+  try {
+    localStorage.setItem(RECENT_DECKS_KEY, JSON.stringify(updated));
+  } catch {
+    // storage unavailable — history just won't persist this session
+  }
+  return updated;
+}
+
+function removeRecentDeck(code: string): RecentDeck[] {
+  const updated = loadRecentDecks().filter((d) => d.code !== code);
+  try {
+    localStorage.setItem(RECENT_DECKS_KEY, JSON.stringify(updated));
+  } catch {
+    // ignore
+  }
+  return updated;
+}
 
 interface DeckViewProps {
   activeDeck: DeckInfo | null;
   loadDeckByCode: (code: string) => Promise<boolean>;
   saveDeckToCloud: (password: string) => Promise<boolean>;
-  createNewDeck: (code: string, name: string, password: string) => Promise<boolean>;
+  createNewDeck: (code: string, name: string, password: string, useCurrentWords: boolean) => Promise<boolean>;
+  updateDeckSettings: (currentPassword: string, newName: string, newPassword: string) => Promise<boolean>;
   resetToLocalSeed: () => void;
   wordsCount: number;
   showToast: (msg: string) => void;
@@ -18,6 +59,7 @@ export const DeckView: React.FC<DeckViewProps> = ({
   loadDeckByCode,
   saveDeckToCloud,
   createNewDeck,
+  updateDeckSettings,
   resetToLocalSeed,
   wordsCount,
   showToast,
@@ -27,14 +69,36 @@ export const DeckView: React.FC<DeckViewProps> = ({
   const [loadCode, setLoadCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Update deck form
+  // Recently loaded decks (local to this browser only)
+  const [recentDecks, setRecentDecks] = useState<RecentDeck[]>(() => loadRecentDecks());
+
+  useEffect(() => {
+    if (activeDeck) {
+      setRecentDecks(pushRecentDeck({ code: activeDeck.code, name: activeDeck.name }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeDeck?.code, activeDeck?.name]);
+
+  const handleRemoveRecent = (code: string) => {
+    setRecentDecks(removeRecentDeck(code));
+  };
+
+  // Update deck words form
   const [updatePassword, setUpdatePassword] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Update deck settings (name / password) form
+  const [settingsCurrentPassword, setSettingsCurrentPassword] = useState('');
+  const [settingsNewName, setSettingsNewName] = useState('');
+  const [settingsNewPassword, setSettingsNewPassword] = useState('');
+  const [settingsConfirmPassword, setSettingsConfirmPassword] = useState('');
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
 
   // Create deck form
   const [newCode, setNewCode] = useState('');
   const [newName, setNewName] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [useCurrentWords, setUseCurrentWords] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
 
   if (hidden) return null;
@@ -72,6 +136,44 @@ export const DeckView: React.FC<DeckViewProps> = ({
     }
   };
 
+  const handleSaveSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeDeck) {
+      showToast('No active cloud deck selected');
+      return;
+    }
+    if (!settingsCurrentPassword) {
+      showToast('Enter the current deck password');
+      return;
+    }
+    const nameChanged = settingsNewName.trim().length > 0;
+    const passwordChanged = settingsNewPassword.length > 0;
+
+    if (!nameChanged && !passwordChanged) {
+      showToast('Enter a new name and/or new password');
+      return;
+    }
+    if (passwordChanged && settingsNewPassword !== settingsConfirmPassword) {
+      showToast("New passwords don't match");
+      return;
+    }
+
+    setIsSavingSettings(true);
+    const success = await updateDeckSettings(
+      settingsCurrentPassword,
+      settingsNewName.trim(),
+      settingsNewPassword
+    );
+    setIsSavingSettings(false);
+    if (success) {
+      setSettingsCurrentPassword('');
+      setSettingsNewName('');
+      setSettingsNewPassword('');
+      setSettingsConfirmPassword('');
+      showToast('Deck settings updated');
+    }
+  };
+
   const handleCreateDeck = async (e: React.FormEvent) => {
     e.preventDefault();
     const code = newCode.trim().toLowerCase();
@@ -88,12 +190,13 @@ export const DeckView: React.FC<DeckViewProps> = ({
     }
 
     setIsCreating(true);
-    const success = await createNewDeck(code, name, password);
+    const success = await createNewDeck(code, name, password, useCurrentWords);
     setIsCreating(false);
     if (success) {
       setNewCode('');
       setNewName('');
       setNewPassword('');
+      setUseCurrentWords(true);
     }
   };
 
@@ -127,7 +230,7 @@ export const DeckView: React.FC<DeckViewProps> = ({
       </div>
 
       {/* 1. Load Deck by Code */}
-      <form onSubmit={handleLoadDeck} className="field" style={{ marginBottom: '28px' }}>
+      <form onSubmit={handleLoadDeck} className="field" style={{ marginBottom: '16px' }}>
         <label htmlFor="f-load-code">Load Deck by Code</label>
         <div style={{ display: 'flex', gap: '10px' }}>
           <input
@@ -142,11 +245,39 @@ export const DeckView: React.FC<DeckViewProps> = ({
         </div>
       </form>
 
+      {/* Recently loaded decks (remembered on this device only) */}
+      {recentDecks.length > 0 && (
+        <div style={{ marginBottom: '28px' }}>
+          <div className="meta" style={{ marginBottom: '8px' }}>Recently Loaded on This Device</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {recentDecks.map((deck) => (
+              <div key={deck.code} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <button
+                  type="button"
+                  onClick={() => loadDeckByCode(deck.code)}
+                  style={{ fontSize: '13px' }}
+                >
+                  {deck.name} <span className="meta" style={{ textTransform: 'none' }}>({deck.code})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveRecent(deck.code)}
+                  aria-label={`Remove ${deck.code} from history`}
+                  style={{ fontSize: '12px', padding: '2px 6px' }}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="rule" style={{ margin: '24px 0' }} />
 
-      {/* 2. Edit / Save Deck (if active deck is loaded) */}
       {activeDeck && (
         <>
+          {/* 2. Edit / Save Deck Words */}
           <form onSubmit={handleSaveDeck} style={{ marginBottom: '28px' }}>
             <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--ink)' }}>
               Save Current Deck Changes to Supabase
@@ -168,6 +299,64 @@ export const DeckView: React.FC<DeckViewProps> = ({
               {isUpdating ? 'Saving to Supabase...' : 'Save to Supabase'}
             </button>
           </form>
+
+          <div className="rule" style={{ margin: '24px 0' }} />
+
+          {/* 2b. Update Deck Name / Password */}
+          <form onSubmit={handleSaveSettings} style={{ marginBottom: '28px' }}>
+            <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--ink)' }}>
+              Update Deck Name / Password
+            </label>
+            <p className="note" style={{ margin: '4px 0 10px' }}>
+              Requires the current password. Leave a field blank to keep it unchanged.
+              There's no password recovery — double-check before submitting.
+            </p>
+            <div className="field">
+              <label htmlFor="f-settings-current-pass">Current Password</label>
+              <input
+                id="f-settings-current-pass"
+                type="password"
+                placeholder="Required to authorize changes"
+                value={settingsCurrentPassword}
+                onChange={(e) => setSettingsCurrentPassword(e.target.value)}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="f-settings-name">New Display Name</label>
+              <input
+                id="f-settings-name"
+                placeholder={activeDeck.name}
+                value={settingsNewName}
+                onChange={(e) => setSettingsNewName(e.target.value)}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="f-settings-new-pass">New Password</label>
+              <input
+                id="f-settings-new-pass"
+                type="password"
+                placeholder="Leave blank to keep current password"
+                value={settingsNewPassword}
+                onChange={(e) => setSettingsNewPassword(e.target.value)}
+              />
+            </div>
+            {settingsNewPassword.length > 0 && (
+              <div className="field">
+                <label htmlFor="f-settings-confirm-pass">Confirm New Password</label>
+                <input
+                  id="f-settings-confirm-pass"
+                  type="password"
+                  placeholder="Re-enter new password"
+                  value={settingsConfirmPassword}
+                  onChange={(e) => setSettingsConfirmPassword(e.target.value)}
+                />
+              </div>
+            )}
+            <button type="submit" className="solid" disabled={isSavingSettings}>
+              {isSavingSettings ? 'Updating...' : 'Update Deck Settings'}
+            </button>
+          </form>
+
           <div className="rule" style={{ margin: '24px 0' }} />
         </>
       )}
@@ -178,8 +367,31 @@ export const DeckView: React.FC<DeckViewProps> = ({
           Create New Deck on Supabase
         </label>
         <p className="note" style={{ margin: '4px 0 14px' }}>
-          Create a shareable deck protected by password. Your current {wordsCount} words will be saved as initial content.
+          Create a shareable deck protected by password.
         </p>
+        <div className="field">
+          <label>Initial Content</label>
+          <div style={{ display: 'flex', gap: '20px', fontSize: '13px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 400 }}>
+              <input
+                type="radio"
+                name="initial-content"
+                checked={useCurrentWords}
+                onChange={() => setUseCurrentWords(true)}
+              />
+              Use current {wordsCount} words
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 400 }}>
+              <input
+                type="radio"
+                name="initial-content"
+                checked={!useCurrentWords}
+                onChange={() => setUseCurrentWords(false)}
+              />
+              Start empty
+            </label>
+          </div>
+        </div>
         <div className="field">
           <label htmlFor="f-new-code">Deck Code (unique identifier for sharing)</label>
           <input

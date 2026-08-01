@@ -42,6 +42,7 @@ export function App() {
     bulkAddWords,
     deleteWord,
     restoreBackup,
+    updateDeckSettings
   } = useVocabDeck();
 
   return (
@@ -93,6 +94,7 @@ export function App() {
         resetToLocalSeed={resetToLocalSeed}
         wordsCount={words.length}
         showToast={showToast}
+        updateDeckSettings={updateDeckSettings}
       />
 
       <DataView

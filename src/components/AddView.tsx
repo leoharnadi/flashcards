@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AiGenerateView } from './AiGenerateView';
 
 interface AddViewProps {
   addWord: (w: string, m: string, g: string, e: string) => boolean;
@@ -85,8 +86,14 @@ export const AddView: React.FC<AddViewProps> = ({
 
       <div className="rule" style={{ margin: '30px 0 18px' }} />
 
+      {/* AI Generator Section */}
+      <AiGenerateView bulkAddWords={bulkAddWords} showToast={showToast} />
+
+      <div className="rule" style={{ margin: '30px 0 18px' }} />
+
+      {/* Bulk Raw Input Section */}
       <div className="field">
-        <label htmlFor="bulk">Paste many at once</label>
+        <label htmlFor="bulk">Paste many at once (Manual Bulk)</label>
         <p className="note" style={{ margin: '0 0 8px' }}>
           One word per line, fields separated by <code>|</code> — word | meaning | Indonesian |
           example. Missing fields are fine; you can fill them in later.
