@@ -272,6 +272,42 @@ export function useVocabDeck() {
     [words, prog, saveDeck, showToast]
   );
 
+  const updateWord = useCallback(
+    (index: number, updatedEntry: WordEntry) => {
+      const oldWord = words[index];
+      if (!oldWord) return false;
+
+      const trimmedW = updatedEntry.w.trim();
+      if (!trimmedW) {
+        showToast('Word cannot be empty');
+        return false;
+      }
+
+      const newRecord: WordEntry = {
+        w: trimmedW,
+        m: updatedEntry.m.trim(),
+        g: updatedEntry.g.trim(),
+        e: updatedEntry.e.trim(),
+      };
+
+      const newWords = [...words];
+      newWords[index] = newRecord;
+
+      const newProg = { ...prog };
+      if (oldWord.w !== trimmedW && newProg[oldWord.w] !== undefined) {
+        newProg[trimmedW] = newProg[oldWord.w];
+        delete newProg[oldWord.w];
+      }
+
+      setWords(newWords);
+      setProg(newProg);
+      saveDeck(newWords, newProg);
+      showToast(`Updated "${trimmedW}"`);
+      return true;
+    },
+    [words, prog, saveDeck, showToast]
+  );
+
   const restoreBackup = useCallback(
     (jsonString: string) => {
       try {
@@ -538,6 +574,7 @@ export function useVocabDeck() {
     addWord,
     bulkAddWords,
     deleteWord,
+    updateWord,
     restoreBackup,
   };
 }

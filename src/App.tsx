@@ -41,6 +41,7 @@ export function App() {
     addWord,
     bulkAddWords,
     deleteWord,
+    updateWord,
     restoreBackup,
     updateDeckSettings
   } = useVocabDeck();
@@ -76,6 +77,7 @@ export function App() {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         deleteWord={deleteWord}
+        updateWord={updateWord}
       />
 
       <AddView
