@@ -217,7 +217,7 @@ export const DeckView: React.FC<DeckViewProps> = ({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <h3 style={{ margin: 0, fontFamily: 'var(--serif)', fontSize: '20px' }}>
-              {activeDeck ? activeDeck.name : 'Default GRE Vocabulary'}
+              {activeDeck ? activeDeck.name : 'Default Vocabulary'}
             </h3>
             <div className="meta" style={{ marginTop: '4px', textTransform: 'none' }}>
               Code: <code>{activeDeck ? activeDeck.code : 'local-seed'}</code> • {wordsCount} words
