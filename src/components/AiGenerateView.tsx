@@ -158,9 +158,9 @@ export const AiGenerateView: React.FC<AiGenerateViewProps> = ({
           <button
             type="button"
             disabled
-            title="Set VITE_GEMINI_API_KEY in .env to enable direct API generation"
+            title="Configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env to enable AI generation"
           >
-            ✨ Generate with Gemini (API key required)
+            ✨ Generate with Gemini (Supabase required)
           </button>
         )}
 
@@ -171,7 +171,7 @@ export const AiGenerateView: React.FC<AiGenerateViewProps> = ({
 
       {!isAiConfigured && (
         <p className="note" style={{ color: 'var(--amber)', fontSize: '12px' }}>
-          💡 Note: Direct API generation requires <code>VITE_GEMINI_API_KEY</code> in your <code>.env</code> file. You can still use the <strong>"Copy LLM Prompt"</strong> button anytime for free with ChatGPT or Claude!
+          💡 Note: Direct API generation requires Supabase to be configured (see <code>.env</code>). You can still use the <strong>"Copy LLM Prompt"</strong> button anytime for free with ChatGPT or Claude!
         </p>
       )}
 

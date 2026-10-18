@@ -1,13 +1,8 @@
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+import { supabase, isSupabaseConfigured } from './supabase';
 
-export const isAiConfigured = Boolean(GEMINI_API_KEY);
-
-// Tried in order. First is fastest/cheapest; later ones are fallbacks if it errors.
-const GEMINI_MODEL_CHAIN = [
-  'gemini-3.6-flash',
-  'gemini-3.5-flash-lite',
-  'gemini-2.5-flash',
-] as const;
+// AI generation is proxied through a Supabase Edge Function (supabase/functions/gemini-proxy)
+// so the Gemini API key lives only in Supabase secrets, never in the client bundle.
+export const isAiConfigured = isSupabaseConfigured;
 
 /**
  * Build a ready-to-copy prompt the user can paste into ChatGPT / Gemini / etc.
@@ -28,101 +23,28 @@ Rules:
 Words: ${joined}`;
 }
 
-interface GeminiCandidate {
-  content?: {
-    parts?: { text?: string }[];
-  };
-}
-
-interface GeminiResponse {
-  candidates?: GeminiCandidate[];
-}
-
-export class GeminiModelError extends Error {
-  model: string;
-  status: number;
-  body: string;
-
-  constructor(model: string, status: number, body: string) {
-    super(`Gemini API error on ${model} (${status}): ${body}`);
-    this.name = 'GeminiModelError';
-    this.model = model;
-    this.status = status;
-    this.body = body;
-  }
-}
-
 /**
- * Call a single Gemini model. Throws GeminiModelError on any failure
- * (HTTP error or empty/missing text in the response).
- */
-async function callGeminiModel(model: string, prompt: string): Promise<string> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 8192,
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    const errorBody = await response.text();
-    throw new GeminiModelError(model, response.status, errorBody);
-  }
-
-  const data: GeminiResponse = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-  if (!text) {
-    throw new GeminiModelError(model, response.status, 'Empty response (no candidates/text)');
-  }
-
-  return text.trim();
-}
-
-/**
- * Call the Gemini API to generate flashcard entries for a list of words.
- * Tries each model in GEMINI_MODEL_CHAIN in order, falling back to the next
- * on any error. Throws only if every model in the chain fails.
+ * Calls the gemini-proxy Edge Function to generate flashcard entries for a list of words.
+ * The function itself tries a chain of Gemini models server-side, falling back on error.
  *
  * Returns the raw pipe-separated text (one entry per line).
  */
-export async function generateWordsViaApi(
-  wordList: string[],
-  onModelFallback?: (failedModel: string, error: Error, nextModel: string) => void
-): Promise<string> {
+export async function generateWordsViaApi(wordList: string[]): Promise<string> {
   if (!isAiConfigured) {
-    throw new Error('Gemini API key is not configured');
+    throw new Error('Supabase is not configured, so AI generation is unavailable');
   }
 
-  const prompt = generatePrompt(wordList);
-  const errors: GeminiModelError[] = [];
+  const { data, error } = await supabase.functions.invoke<{ text?: string; error?: string }>(
+    'gemini-proxy',
+    { body: { words: wordList } }
+  );
 
-  for (let i = 0; i < GEMINI_MODEL_CHAIN.length; i++) {
-    const model = GEMINI_MODEL_CHAIN[i];
-    try {
-      return await callGeminiModel(model, prompt);
-    } catch (err) {
-      const geminiErr = err instanceof GeminiModelError
-        ? err
-        : new GeminiModelError(model, 0, err instanceof Error ? err.message : String(err));
-      errors.push(geminiErr);
-
-      const nextModel = GEMINI_MODEL_CHAIN[i + 1];
-      if (nextModel) {
-        onModelFallback?.(model, geminiErr, nextModel);
-        continue;
-      }
-    }
+  if (error) {
+    throw new Error(error.message || 'AI generation failed');
+  }
+  if (!data?.text) {
+    throw new Error(data?.error || 'Empty response from AI');
   }
 
-  // Every model in the chain failed.
-  const summary = errors.map(e => `  - ${e.message}`).join('\n');
-  throw new Error(`All Gemini models failed:\n${summary}`);
+  return data.text;
 }
